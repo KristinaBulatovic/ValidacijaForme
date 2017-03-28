@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Validacija forme</title>
+    <style>
+        body{text-align: center}
+        .greska{color: red}
+        .font{font-size: 40px}
+    </style>
+</head>
+<body>
+<form name="PrijavaIspita" method="get" action="#" onsubmit="return proveriFormu(this)">
+    Ime i prezime: <span id="ime-prezime" style="color: red; font-size: 14px"></span>
+    <br/><br/>
+    <input type="text" name="ImePrezime" >
+    <br/><br/>
+
+    Pol: <span id="pol" style="color: red; font-size: 14px"></span>
+    <br/><br/>
+    Muski:  <input type="radio" name="Pol" value="muski">
+    Zenski: <input type="radio" name="Pol" value="zenski">
+    <br/><br/>
+
+    Smer: <span id="smer" style="color: red; font-size: 14px"></span>
+    <br/><br/>
+    <select name="Smer">
+        <option value="0" selected>Izaberite smer</option>
+        <option value="IT">Informacione tehnologije</option>
+        <option value="M" >Menadzment</option>
+    </select>
+    <br/><br/>
+
+    Ispiti za prijavu: <span id="ispiti" style="color: red; font-size: 14px"></span>
+    <br/><br/>
+    ISWD <input type="checkbox" name="Ispiti[]" value="iswd">
+    WP   <input type="checkbox" name="Ispiti[]" value="wp">
+    RG   <input type="checkbox" name="Ispiti[]" value="rg">
+    <br/><br/>
+
+    <input type="submit" value="Prijava">
+    <input type="reset" value="Resetuj">
+
+    <p id="poruka" class="font"></p>
+</form>
+<script>
+    function proveriFormu(forma) {
+//        var forma = document.getElementByTagName('form')[0]
+//        forma = document.getElementsByName("PrijavaIspita")[0];
+//        formaX = document.forms[0];
+//        console.log()
+
+        var prosao = true;
+//        var poruka = document.getElementById("poruka");
+//        poruka.innerText = "";
+        document.getElementById("ime-prezime").innerHTML = "";
+        document.getElementById("pol").innerHTML = "";
+        document.getElementById("smer").innerHTML = "";
+        document.getElementById("ispiti").innerHTML = "";
+
+        //Provera imena i prezimena
+        var imePrezime = forma.ImePrezime.value.trim();
+        if (!imePrezime) {
+//            poruka.appendChild(document.createTextNode("Unesite ime i prezime")); //(neophodno*)
+            prosao = false;
+            document.getElementById("ime-prezime").innerHTML = " (neophodno*)";
+        }
+
+        //Provera smera
+        var selektovana = forma.Smer.selectedIndex;
+        var opcije = forma.Smer.options;
+        var vrednost = opcije[selektovana].value;  //.text
+
+        if (vrednost == "0") {
+//            poruka.innerText = "Izaberite smer";
+            prosao = false;
+            document.getElementById("smer").innerHTML = " (neophodno*)";
+        }
+
+        //Provera Pola
+        var pol = forma.Pol;
+        if (!proveriRadio(pol)) {
+            prosao = false;
+            document.getElementById("pol").innerHTML = " (neophodno*)";
+        }
+
+        //Provera ispita
+        if (!proveriCheck(forma, "Ispiti[]")) {
+            prosao = false;
+            document.getElementById("ispiti").innerHTML = " (neophodno*)";
+        }
+
+        if (!prosao) {
+//            poruka.innerHTML = "<b>Unesite vrednosti u sva polja!</b>";
+////           poruka.style.color = "#fa0000";
+//            poruka.className += " greska";
+            return false;
+//        }
+            return true;
+        }
+    }
+    function proveriRadio(polja){
+        for (var i=0; i<polja.length; i++){
+            if(polja[i].checked){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function proveriCheck(forma, naziv) {
+        var elementi = forma.elements;
+        for (var i = 0; i < elementi.length; i++) {
+            var elem = elementi[i];
+            if (elem.type == 'checkbox' && elem.name == naziv && elem.checked) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+</body>
+</html>
